@@ -12,6 +12,7 @@ from conftest import OWNER_NAME, OWNER_PASSWORD, AuthEnv, routes_of
 
 from yournas.auth.passwords import PasswordService
 from yournas.auth.service import MAX_SESSIONS_PER_USER, AuthService
+from yournas.core.database import SCHEMA_VERSION
 
 LOGIN = "/api/v1/auth/login"
 ME = "/api/v1/auth/me"
@@ -367,7 +368,7 @@ def test_admin_status_is_owner_only(auth_env: AuthEnv) -> None:
     ok = client.get(STATUS, headers=bearer(owner))
     assert ok.status_code == 200
     body = ok.json()
-    assert body["database"] == {"ok": True, "schema_version": 3}
+    assert body["database"] == {"ok": True, "schema_version": SCHEMA_VERSION}
     assert body["storage"]["free_bytes"] > 0 and body["storage"]["total_bytes"] > 0
     assert body["version"]
     # No server paths or secrets.

@@ -28,7 +28,7 @@ include = ["yournas*"]
 
 # The web UI is plain static files next to the Python package.
 [tool.setuptools.package-data]
-"yournas.web" = ["index.html", "static/**/*"]
+"yournas.web" = ["index.html", "sw.js", "static/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

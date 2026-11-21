@@ -1,0 +1,38 @@
+# secrets / local config
+.env
+.env.*
+!.env.example
+config.local.json
+*.pem
+*.key
+
+# runtime data
+data/
+logs/
+*.db
+*.db-wal
+*.db-shm
+.yournas-tmp/
+install-backup/
+
+# python
+*.egg-info/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# node / build
+node_modules/
+dist/
+build/
+
+# os / editor
+Thumbs.db
+.vscode/
+.idea/
+
+# private notes (network details)
+FRIEND-ACCESS-REPORT.md

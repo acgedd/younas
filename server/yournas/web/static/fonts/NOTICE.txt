@@ -1,0 +1,12 @@
+Fonts in this folder
+
+Redaction 10 (Regular, Bold)
+  SIL Open Font License 1.1. See OFL-Redaction.txt. Copyright string read from the font files.
+
+DM Mono (Regular, Medium), latin subset
+  SIL Open Font License 1.1. See OFL-DMMono.txt. From @fontsource/dm-mono 5.3.0.
+
+Eternal Bloom
+  Copyright (c) 2025 by Masyafi Studio. The font file has no license field.
+  OWNER-REPORTED: the owner states they hold a license covering this use. Not verified from a
+  license document. Keep that document with the project's records.

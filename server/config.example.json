@@ -1,0 +1,10 @@
+{
+  "storage_root": "C:\\NAS",
+  "host": "127.0.0.1",
+  "port": 8000,
+  "log_dir": "C:\\YourNAS\\logs",
+  "allowed_hosts": [],
+  "trust_forwarded_for": false,
+  "enable_hsts": false,
+  "enable_docs": false
+}

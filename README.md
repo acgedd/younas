@@ -1,6 +1,6 @@
 # YourNAS
 
-A small, self-hosted private file server for one owner and a few trusted friends. It runs on an ordinary Windows machine (Python/FastAPI, local NTFS storage). It is reached only over a private [Tailscale](https://tailscale.com) network and used from an installable web app on iPhone, Android or desktop.
+A small, self-hosted private file server. It runs on an ordinary Windows machine (Python/FastAPI, local NTFS storage). It is reached only over a private [Tailscale](https://tailscale.com) network and used from an installable web app on iPhone, Android or desktop.
 
 <p align="center">
   <img src="docs/screenshots/login.png" width="200" alt="Sign in">

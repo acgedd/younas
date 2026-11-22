@@ -65,7 +65,7 @@ def test_a_second_chunk_in_flight_is_retried(outcomes: dict[str, dict[str, Any]]
 
 def test_a_full_disk_is_not_retried(outcomes: dict[str, dict[str, Any]]) -> None:
     r = outcomes["disk-full"]
-    assert (r["state"], r["tag"], r["patches"]) == ("error", "NO SPACE", 1)
+    assert (r["state"], r["tag"], r["patches"]) == ("error", "No space", 1)
 
 
 def test_all_bytes_sent_is_not_done_unless_the_file_is_in_place(
@@ -93,4 +93,4 @@ def test_a_download_too_big_for_a_browser_is_refused_before_any_request(
     outcomes: dict[str, dict[str, Any]],
 ) -> None:
     r = outcomes["download-too-large"]
-    assert (r["state"], r["tag"], r["requests"]) == ("error", "TOO LARGE", 0)
+    assert (r["state"], r["tag"], r["requests"]) == ("error", "Too large", 0)

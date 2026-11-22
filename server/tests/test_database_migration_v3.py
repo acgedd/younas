@@ -88,7 +88,7 @@ def migrated(tmp_path: Path) -> Database:
     path = tmp_path / DB_FILE_NAME
     make_v2(path)
     db = Database(path)
-    assert db.schema_version == 3
+    assert db.schema_version == SCHEMA_VERSION
     return db
 
 
@@ -165,7 +165,7 @@ def test_a_failed_v3_step_leaves_a_v2_database(
     raw.close()
     # and the next start with the real script works
     monkeypatch.undo()
-    assert Database(path).schema_version == 3
+    assert Database(path).schema_version == SCHEMA_VERSION
 
 
 @pytest.mark.parametrize("version", [SCHEMA_VERSION + 1, 99])

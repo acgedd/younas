@@ -237,7 +237,8 @@ def test_list_item_fields_and_order(owner: Session) -> None:
     by_name = {i["name"]: i for i in items}
     assert by_name["b.txt"]["kind"] == "file" and by_name["b.txt"]["size"] == 5
     assert by_name["folder"]["kind"] == "dir" and by_name["folder"]["size"] is None
-    assert set(by_name["b.txt"]) == {"name", "kind", "size", "modified"}
+    assert set(by_name["b.txt"]) == {"name", "kind", "size", "modified", "thumb"}
+    assert by_name["b.txt"]["thumb"] is False  # no thumbnail was stored for it
     modified = datetime.fromisoformat(by_name["b.txt"]["modified"])
     assert modified.utcoffset() is not None and modified.utcoffset().total_seconds() == 0  # type: ignore[union-attr]
     assert abs(modified.timestamp() - time.time()) < 120

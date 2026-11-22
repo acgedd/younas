@@ -65,10 +65,13 @@ def test_static_assets_have_the_right_content_types(make_app: Callable[..., Fast
     client = TestClient(make_app())
     expected = {
         "/app/s/js/main.js": "text/javascript",  # a module with text/plain is refused by browsers
-        "/app/s/css/tokens.css": "text/css",
-        "/app/s/fonts/JetBrainsMono-Regular.woff2": "font/woff2",
-        "/app/s/img/angel.png": "image/png",
-        "/app/s/img/favicon.svg": "image/svg+xml",  # linked as the page icon
+        "/app/s/css/app.css": "text/css",
+        "/app/s/fonts/DMMono-Regular.woff2": "font/woff2",
+        "/app/s/fonts/Redaction10-Regular.ttf": "font/ttf",
+        "/app/s/fonts/EternalBloom.otf": "font/otf",
+        "/app/s/img/icon-32.png": "image/png",  # linked as the page icon
+        "/app/s/img/noise.svg": "image/svg+xml",
+        "/app/s/manifest.webmanifest": "application/manifest+json",  # needed to install the PWA
     }
     for path, content_type in expected.items():
         r = client.get(path)
@@ -252,7 +255,9 @@ def backend_error_codes() -> set[str]:
 
 
 def test_every_error_code_the_js_branches_on_exists_in_the_backend() -> None:
-    client_only = {"network", "error", "incomplete"}  # made up by the UI itself
+    # made up by the UI itself (file_unreadable: the phone could not read a picked file;
+    # stalled: a chunk was refused too many times in a row)
+    client_only = {"network", "error", "incomplete", "file_unreadable", "stalled"}
     seen: set[str] = set()
     for path in js_files():
         text = read(path)
@@ -268,57 +273,38 @@ def test_every_error_code_the_js_branches_on_exists_in_the_backend() -> None:
         assert code in sent, f"the UI uses code {code!r}, the server never sends it"
 
 
-def test_mock_data_is_isolated_and_marked() -> None:
-    importers = [p for p in js_files() if p.name != "mock.js" and "mock.js" in read(p)]
-    assert {p.name for p in importers} <= {"status.js", "system.js"}
-    for path in importers:
-        assert "mock-tag" in read(path), f"{path.name} shows sample data without a MOCK tag"
-    assert "SAMPLE DATA ONLY" in read(JS_DIR / "mock.js")
-
-
-def test_mock_rows_do_not_claim_to_be_live() -> None:
-    status = read(JS_DIR / "views" / "status.js")
-    mock_row = status[status.index("function mockRow") : status.index("function group")]
-    assert "mockTag()" in mock_row
-    assert '"OPERATIONAL"' not in mock_row  # a sample row must not read like a passing check
-    assert '"SAMPLE"' in mock_row
-    assert "ALL LIVE CHECKS PASSING" in status  # the summary line counts only real checks
+def test_no_sample_data_ships() -> None:
+    """The redesign removed every mock screen: what the UI shows must come from the server, so
+    no sample data may creep back in looking like a live reading."""
+    assert not (JS_DIR / "mock.js").exists()
+    for path in js_files():
+        text = read(path)
+        assert "mock.js" not in text, f"{path.name} imports sample data"
+        assert "mockTag" not in text and "SAMPLE DATA" not in text, path.name
 
 
 def test_a_folder_row_opens_exactly_once_on_a_double_click() -> None:
     """A dblclick handler next to the click handler opened the folder twice ("a/a" -> 404): the
     click handler already opens an already-selected folder."""
-    assert not re.search(r"addEventListener\(\s*[\"']dblclick", read(JS_DIR / "views" / "files.js"))
+    for path in js_files():
+        assert not re.search(r"addEventListener\(\s*[\"']dblclick", read(path)), path.name
 
 
 def css_rule(selector: str) -> str:
-    """The body of the first top-level `selector { ... }` rule in components.css."""
-    css = read(CSS_DIR / "components.css")
-    match = re.search(re.escape(selector) + r"\s*\{(.*?)\n\}", css, re.DOTALL)
-    assert match, f"no rule for {selector}"
-    return match.group(1)
-
-
-def test_the_system_artwork_fades_on_every_edge() -> None:
-    """The angel PNG is a square whose wings run off its edges. Masking one axis left a hard square
-    on the other three sides: both axes must be masked and multiplied, so the corners fade twice."""
-    art = css_rule(".hero__art")
-    assert "to right" in art and "to bottom" in art
-    assert "mask-composite: intersect" in art and "-webkit-mask-composite: source-in" in art
-    assert "mask-image" in art and "-webkit-mask-image" in art
-    assert "url(" in art and "http" not in art  # the local file, never a remote image
+    """The body of the first top-level `selector{...}` rule in the app's stylesheets."""
+    for name in ("app.css", "additions.css"):
+        css = read(CSS_DIR / name)
+        match = re.search(r"(?:^|[}\n])\s*" + re.escape(selector) + r"\s*\{([^}]*)\}", css)
+        if match:
+            return match.group(1)
+    raise AssertionError(f"no rule for {selector}")
 
 
 def test_long_names_wrap_instead_of_widening_the_screen() -> None:
-    """A long file or folder name pushed CONFIRM / CANCEL and the breadcrumb off the screen."""
-    assert "flex-wrap: wrap" in css_rule(".actions")
-    assert "overflow-wrap: anywhere" in css_rule(".actions__ask")
-    assert "overflow-wrap: anywhere" in css_rule(".crumbs button")
-    assert "actions__ask" in read(JS_DIR / "views" / "files.js")
-
-
-def test_the_transfer_wave_is_wider_than_the_column() -> None:
-    """The wave was a fixed 34-character string, half a phone wide. Now it is tiled and clipped."""
-    transfer = read(JS_DIR / "views" / "transfer.js")
-    assert "WAVE.repeat(TILES)" in transfer and "FLAT = " in transfer
-    assert "overflow: hidden" in css_rule(".wave")
+    """A long file or folder name pushed the delete question and the breadcrumb off the screen."""
+    assert "overflow-wrap:anywhere" in css_rule(".fask")  # "Delete <name>?"
+    assert "overflow-wrap:anywhere" in css_rule(".crumbs")
+    row_name = css_rule(".frow .nm")  # a row keeps one line and cuts the name short instead
+    assert "text-overflow:ellipsis" in row_name and "overflow:hidden" in row_name
+    library = read(JS_DIR / "views" / "library.js")
+    assert '"fask"' in library and "crumbs" in library

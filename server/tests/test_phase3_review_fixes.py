@@ -141,7 +141,7 @@ def test_storage_io_error_is_logged_without_path_or_name(
     exc = os_error()
 
     def boom(*_a: object, **_k: object) -> object:
-        raise files._translate(exc) from exc
+        raise files.translate_os_error(exc) from exc
 
     monkeypatch.setattr(files, "list_dir", boom)
     r = owner.client.get(ITEMS)
@@ -273,7 +273,7 @@ def test_discard_staging_reports_failure_instead_of_raising(
     def boom(_path: Path) -> object:
         raise StorageIOError("errno=5")
 
-    monkeypatch.setattr(files, "_lstat_or_none", boom)
+    monkeypatch.setattr(files, "lstat_or_none", boom)
     assert files.discard_staging(tmp_path / ("a" * 32 + ".part")) is False
 
 

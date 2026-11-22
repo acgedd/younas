@@ -12,6 +12,7 @@ import httpx
 import pytest
 from conftest import OWNER_NAME, OWNER_PASSWORD, AuthEnv, bearer
 
+from yournas.core.database import SCHEMA_VERSION
 from yournas.core.errors import AppError
 
 LOGIN = "/api/v1/auth/login"
@@ -207,4 +208,4 @@ def test_accounts_that_already_hold_an_old_temporary_password_are_expired_not_mi
             (int(auth_env.clock()) - 30 * DAY, user_id),
         )
     assert code(login(auth_env, "alice", temp)) == "temporary_password_expired"
-    assert auth_env.db.schema_version == 3
+    assert auth_env.db.schema_version == SCHEMA_VERSION

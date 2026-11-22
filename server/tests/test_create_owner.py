@@ -183,6 +183,12 @@ def test_the_http_surface_is_pinned(make_app: Callable[..., FastAPI]) -> None:
         ("GET", "/api/v1/uploads/{upload_id}"),
         ("HEAD", "/api/v1/uploads/{upload_id}"),
         ("DELETE", "/api/v1/uploads/{upload_id}"),
+        ("GET", "/api/v1/spaces/{space}/thumbnail"),
+        ("PUT", "/api/v1/spaces/{space}/thumbnail"),
+        ("GET", "/api/v1/spaces/{space}/photos/months"),
+        ("GET", "/api/v1/spaces/{space}/photos/months/{month}"),
+        ("PUT", "/api/v1/spaces/{space}/photos/months/{month}/cover"),
+        ("DELETE", "/api/v1/spaces/{space}/photos/months/{month}/cover"),
     }
 
 

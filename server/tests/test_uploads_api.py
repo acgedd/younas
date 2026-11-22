@@ -19,6 +19,7 @@ from conftest import AuthEnv, Session, bearer, routes_of, session_for
 from yournas.main import CHUNK_BODY_SLACK_BYTES, JSON_BODY_LIMIT_BYTES
 from yournas.storage import files
 from yournas.storage.errors import DiskFull
+from yournas.thumbnails import THUMBNAIL_MAX_BYTES
 
 CREATE = "/api/v1/spaces/home/uploads"
 UPLOADS = "/api/v1/uploads"
@@ -665,6 +666,8 @@ def test_every_route_with_a_body_has_a_size_cap_before_authentication(
             size = JSON_BODY_LIMIT_BYTES + 1
         elif method == "PATCH":
             size = chunk_cap + CHUNK_BODY_SLACK_BYTES + 1
+        elif method == "PUT" and path.endswith("/thumbnail"):
+            size = THUMBNAIL_MAX_BYTES + 1  # a raw JPEG body has its own, larger cap
         else:
             size = JSON_BODY_LIMIT_BYTES + 1
         r = client.request(method, concrete(path), content=b"x" * size)

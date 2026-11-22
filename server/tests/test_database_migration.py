@@ -65,8 +65,8 @@ def tables(db: Database) -> set[str]:
         return {r["name"] for r in rows}
 
 
-def test_current_schema_version_is_three() -> None:
-    assert SCHEMA_VERSION == 3
+def test_current_schema_version_is_six() -> None:
+    assert SCHEMA_VERSION == 6
 
 
 def test_v1_database_is_migrated_and_keeps_its_data(tmp_path: Path) -> None:
@@ -155,7 +155,7 @@ def test_failed_migration_step_leaves_the_old_version(
     raw.close()
 
 
-@pytest.mark.parametrize("version", [4, 99])
+@pytest.mark.parametrize("version", [SCHEMA_VERSION + 1, 99])
 def test_database_newer_than_the_server_is_still_refused(tmp_path: Path, version: int) -> None:
     path = tmp_path / DB_FILE_NAME
     raw = sqlite3.connect(path)

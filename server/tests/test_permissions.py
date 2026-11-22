@@ -134,7 +134,15 @@ def test_needs_covers_every_action_exactly() -> None:
 
 
 def test_action_values_are_the_documented_words() -> None:
-    assert {a.value for a in Action} == {"list", "read", "upload", "mkdir", "delete"}
+    assert {a.value for a in Action} == {
+        "list",
+        "read",
+        "upload",
+        "mkdir",
+        "delete",
+        "thumbnail_write",
+        "cover_write",
+    }
 
 
 def test_home_space_id_matches_the_api_constant() -> None:

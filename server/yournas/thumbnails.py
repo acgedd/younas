@@ -1,4 +1,4 @@
-"""Photo thumbnails: a row per file version plus bytes in a file (docs/THUMBNAILS-SPEC.md).
+"""Photo thumbnails: a row per file version plus bytes in a file (docs/DESIGN-NOTES.md#thumbnails).
 
 Thumbnails are made on the client. The server checks the JPEG structure, removes metadata and keeps
 the result; it decodes no pixels.

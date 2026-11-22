@@ -1,4 +1,4 @@
-// Library, "Photos": one space's photos grouped by the month they were taken (docs/MONTHS-SPEC.md).
+// Library, "Photos": one space's photos grouped by the month they were taken (docs/DESIGN-NOTES.md#photos-by-month).
 // The server keeps the index and sorts old photos in the background; this page only shows it, and asks
 // again every few seconds while the sorting runs and the page is in view. Nothing is asked before the
 // Library page is first opened.
@@ -331,7 +331,7 @@ export function createPhotos({ ui, spaces, page, track }) {
       big.className = "cvr";
       hero.prepend(big);
     }
-    // Cover choice (docs/COVERS-SPEC.md): writers only; the server checks again. In pick mode a tap
+    // Cover choice (docs/DESIGN-NOTES.md#month-covers): writers only; the server checks again. In pick mode a tap
     // on a tile sends that item's own path, never one rebuilt from its name.
     const writable = s.access === "write";
     const tools = h("div", { class: "acts" });

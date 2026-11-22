@@ -1,4 +1,4 @@
-"""Photos by month (docs/MONTHS-SPEC.md).
+"""Photos by month (docs/DESIGN-NOTES.md#photos-by-month).
 
     GET /api/v1/spaces/{space}/photos/months?year=YYYY
     GET /api/v1/spaces/{space}/photos/months/{YYYY-MM}?limit=&cursor=
@@ -14,12 +14,12 @@ path: `path` is relative to the space and goes back to the existing routes, whic
 (both routes together); past that, after the shape and access checks, the answer is 429
 `too_many_requests` with `Retry-After: 1`, as for thumbnail uploads.
 
-Month covers (docs/COVERS-SPEC.md): the shape checks (month, and for PUT the JSON body) answer 400
-`invalid_request` first, the same for every space; then `Action.COVER_WRITE` (generic 404 for no
-access, 403 for read-only); then the request slot (429); then, for PUT, the path (400
-`invalid_path`, also for an empty path). The key is the parsed path joined with `/` and must equal
-a stored photo_index key exactly: no casefold and no disk access. The service decides access again
-inside the write transaction. Both answer 204 with no body.
+Month covers (docs/DESIGN-NOTES.md#month-covers): the shape checks (month, and for PUT the JSON
+body) answer 400 `invalid_request` first, the same for every space; then `Action.COVER_WRITE`
+(generic 404 for no access, 403 for read-only); then the request slot (429); then, for PUT, the path
+(400 `invalid_path`, also for an empty path). The key is the parsed path joined with `/` and must
+equal a stored photo_index key exactly: no casefold and no disk access. The service decides access
+again inside the write transaction. Both answer 204 with no body.
 """
 
 from __future__ import annotations

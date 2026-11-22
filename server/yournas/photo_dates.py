@@ -1,4 +1,6 @@
-"""The date a photo was taken, read from the first bytes of the file (docs/MONTHS-SPEC.md).
+"""The date a photo was taken, read from the first bytes of the file.
+
+See docs/DESIGN-NOTES.md#photos-by-month.
 
 The second, narrow exception to "the server never interprets file contents" (docs/SECURITY.md §6):
 the owner answered "可以，只讀日期（建議）". Only the date-taken field is read. Nothing else

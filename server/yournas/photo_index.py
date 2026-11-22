@@ -1,5 +1,5 @@
 """Photos by month: the index of photo dates per space and the one background job that fills it
-(docs/MONTHS-SPEC.md).
+(docs/DESIGN-NOTES.md#photos-by-month).
 
 Owner decisions: group by the month a photo was taken, else its upload month; the server may read
 the date taken and nothing else ("可以，只讀日期（建議）"); once started, indexing finishes in the
@@ -30,9 +30,9 @@ Requests: at most 2 photo requests in flight per user (the routes answer 429 pas
 months body is computed from one GROUP BY on the covering index (scope, month, sort_at DESC,
 path_key, file_size, file_mtime_ns) and one cover lookup per month, each under its own short lock.
 
-Month covers (docs/COVERS-SPEC.md): a space may choose the cover of a month among that month's
-own photos. The choice is one row of month_covers per (scope, month), written by `set_cover` and
-removed by `clear_cover`, each in one transaction that decides the user's access again. A row is
+Month covers (docs/DESIGN-NOTES.md#month-covers): a space may choose the cover of a month among that
+month's own photos. The choice is one row of month_covers per (scope, month), written by `set_cover`
+and removed by `clear_cover`, each in one transaction that decides the user's access again. A row is
 only used while photo_index still has a photo of that scope, key and month with a thumbnail of its
 current version; otherwise the month shows today's newest-photo cover. Every cleanup of photo_index
 rows (an API delete, a share delete, the walk's delete batch) removes the cover rows of the same

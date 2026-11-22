@@ -1,5 +1,5 @@
 // Photo thumbnails, made here in the browser: the server stores them and decodes no pixels. See
-// docs/THUMBNAILS-SPEC.md.
+// docs/DESIGN-NOTES.md#thumbnails.
 //
 // Decoding a photo takes a lot of memory on a phone, and a memory kill would take an upload in flight
 // with it, so a photo is only decoded when no upload is active and the page is in view, and only one

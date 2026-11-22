@@ -1,5 +1,5 @@
 /* The approved prototype's styles, split out for the Content-Security-Policy. Design and motion
-   are unchanged; do not undo the iOS Safari lessons listed in docs/HANDOFF.md. */
+   are unchanged; do not undo the iOS Safari lessons listed in docs/DESIGN-NOTES.md#ios-safari-notes. */
 [hidden]{display:none!important}
 :root{
   --bg:#04070f; --surface:#0a1020; --surface-2:#121b33; --line:rgba(160,200,255,.16);

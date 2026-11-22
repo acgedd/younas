@@ -100,7 +100,7 @@ CREATE TABLE audit_log (
 CREATE INDEX audit_at ON audit_log (at);
 """
 
-# Photo thumbnails (Phase B step 1, docs/THUMBNAILS-SPEC.md). The bytes are files under
+# Photo thumbnails (Phase B step 1, docs/DESIGN-NOTES.md#thumbnails). The bytes are files under
 # <data_dir>/thumbs, never in this database. scope comes from the authorization decision, path_key
 # is the real path inside the space as spelled on disk (not casefolded: NTFS keeps names apart that
 # casefold() merges), and the file_ columns are the version of the source file the thumbnail was
@@ -120,16 +120,16 @@ CREATE TABLE thumbnails (
 ) WITHOUT ROWID;
 """
 
-# Photos by month (Phase B step 2, docs/MONTHS-SPEC.md). One row per photo-named file of a space
-# that the background job looked at. kind 'other' is a file whose content is not a photo, kept so it
-# is not opened again. sort_at is wall-clock seconds (the recorded date taken, or the file time in
-# the configured offset) and month is its 'YYYY-MM'. Only numbers derived on the server are stored,
-# never a string read from a file. Same scope and path_key as thumbnails, so the two join. Rollback
-# in place (roll back v6 first): DROP TABLE photo_index, then PRAGMA user_version = 4.
-# photo_index_month covers what GET .../photos/months reads (GROUP BY month with COUNT and
-# SUM(file_size), and the version columns the cover matches against thumbnails) without a table
-# row, and is in the order of the month pages and the cover lookup (sort_at newest first, then
-# path_key), so neither sorts the month.
+# Photos by month (Phase B step 2, docs/DESIGN-NOTES.md#photos-by-month). One row per photo-named
+# file of a space that the background job looked at. kind 'other' is a file whose content is not a
+# photo, kept so it is not opened again. sort_at is wall-clock seconds (the recorded date taken, or
+# the file time in the configured offset) and month is its 'YYYY-MM'. Only numbers derived on the
+# server are stored, never a string read from a file. Same scope and path_key as thumbnails, so the
+# two join. Rollback in place (roll back v6 first): DROP TABLE photo_index, then PRAGMA user_version
+# = 4. photo_index_month covers what GET .../photos/months reads (GROUP BY month with COUNT and
+# SUM(file_size), and the version columns the cover matches against thumbnails) without a table row,
+# and is in the order of the month pages and the cover lookup (sort_at newest first, then path_key),
+# so neither sorts the month.
 _SCHEMA_V5 = """
 CREATE TABLE photo_index (
     scope         TEXT NOT NULL,
@@ -149,13 +149,13 @@ CREATE INDEX photo_index_month
     ON photo_index (scope, month, sort_at DESC, path_key, file_size, file_mtime_ns);
 """
 
-# Month covers (Phase B step 2b, docs/COVERS-SPEC.md). The cover a space chose for a month: one
-# row per (scope, month). scope comes from the authorization decision, never from the space
-# parameter, and path_key is copied from the photo_index row it was matched to (exact key). No user
-# id and no timestamp. A row is only a choice: GET .../photos/months uses it only while photo_index
-# still has a photo of that scope, key and month with a current thumbnail. Rollback in place (a
-# destructive migration, confirmed by the owner as a separate step): DROP TABLE month_covers, then
-# PRAGMA user_version = 5.
+# Month covers (Phase B step 2b, docs/DESIGN-NOTES.md#month-covers). The cover a space chose for a
+# month: one row per (scope, month). scope comes from the authorization decision, never from the
+# space parameter, and path_key is copied from the photo_index row it was matched to (exact key). No
+# user id and no timestamp. A row is only a choice: GET .../photos/months uses it only while
+# photo_index still has a photo of that scope, key and month with a current thumbnail. Rollback in
+# place (a destructive migration, confirmed by the owner as a separate step): DROP TABLE
+# month_covers, then PRAGMA user_version = 5.
 _SCHEMA_V6 = """
 CREATE TABLE month_covers (
     scope    TEXT NOT NULL,

@@ -2,7 +2,7 @@
 // card-to-detail overlay, the bottom sheet, the toast and the file picker. Pages live in views/ and
 // get this frame as `ui`.
 //
-// iOS Safari lessons kept from the prototype (see docs/HANDOFF.md): opaque wheel backdrop and hidden
+// iOS Safari lessons kept from the prototype (see docs/DESIGN-NOTES.md#ios-safari-notes): opaque wheel backdrop and hidden
 // track once the wheel is open; loops run only on the visible page; press feedback only after a
 // 90 ms hold; the glowing buttons get a painted ripple, not a transform.
 

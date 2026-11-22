@@ -62,7 +62,8 @@ class Action(StrEnum):
     MKDIR = "mkdir"
     DELETE = "delete"
     THUMBNAIL_WRITE = "thumbnail_write"
-    COVER_WRITE = "cover_write"  # choose or clear the cover of a month (docs/COVERS-SPEC.md)
+    # choose or clear the cover of a month (docs/DESIGN-NOTES.md#month-covers)
+    COVER_WRITE = "cover_write"
 
 
 # Minimum level for each action. An action missing from this table is refused (403).

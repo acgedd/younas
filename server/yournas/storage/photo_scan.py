@@ -1,5 +1,6 @@
-"""What the photo index needs from the disk (docs/MONTHS-SPEC.md): a bounded walk of one space and a
-bounded read of the first bytes of one file. No policy here; that is in `yournas.photo_index`.
+"""What the photo index needs from the disk (docs/DESIGN-NOTES.md#photos-by-month): a bounded walk
+of one space and a bounded read of the first bytes of one file. No policy here; that is in
+`yournas.photo_index`.
 
 Walk. From the real space root, with an explicit stack (no recursion) and `os.scandir`. Every
 entry is looked at with `DirEntry.stat(follow_symlinks=False)`; reparse points (junctions,

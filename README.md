@@ -91,4 +91,5 @@ cd server
 - [Architecture](docs/ARCHITECTURE.md)
 - [Security model](docs/SECURITY.md)
 - [HTTP API](docs/API.md)
+- [Design notes: photos, thumbnails, iOS Safari](docs/DESIGN-NOTES.md)
 - [Roadmap](docs/ROADMAP.md)
